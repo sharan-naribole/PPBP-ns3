@@ -29,7 +29,7 @@
 #include "ns3/applications-module.h"
 
 using namespace ns3;
-bool verbose = false;
+bool verbose = true;
 
 NS_LOG_COMPONENT_DEFINE ("PPBPExample");
 
