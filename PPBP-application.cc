@@ -15,7 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Doreid Ammar <doreid.ammar@gmail.com>
+ * Author: Sharan Naribole <nsharan@rice.edu>
+ * Extended from PPBP Application provided for older ns-3 version at
+ * http://perso.ens-lyon.fr/thomas.begin/NS3-PPBP.zip
  */
 
 #include "PPBP-application.h"

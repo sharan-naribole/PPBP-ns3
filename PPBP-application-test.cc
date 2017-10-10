@@ -14,16 +14,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// This script configures 1 AP node and N station nodes connected both via WiFi
-// and CSMA. The AP transmits poll request to the station nodes
-// using CSMA in sequential manner.
-// On receiving a poll request, a station node determines randomly if it
-// wants to send a packet or not. If the client has baclogged data, it transmits
-// over WiFi. If the AP does not hear any packet within
-// PIFS duration (25 microseconds but configurable),
-// then it transmits the poll request to next client in schedule. Otherwise, it
-// waits for the packet reception to complete and only then transmit the next
-// poll request.
+/* This script configures two nodes connected vis CSMA channel. One of the
+*  nodes transmits packets via PPBP application to the other node.
+*  Command line parameters are the simulationTime and verbose for logging.
+*  Example run: Copy to scratch folder and run
+*  ./waf --run "scratch/PPBP-application-test --simulationTime=10.0 --verbose=true"
+*  Author: Sharan Naribole <nsharan@rice.edu>
+*/
 
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -32,25 +29,29 @@
 #include "ns3/applications-module.h"
 
 using namespace ns3;
+bool verbose = false;
 
-NS_LOG_COMPONENT_DEFINE ("FirstScriptExample");
+NS_LOG_COMPONENT_DEFINE ("PPBPExample");
 
 void TxTrace(std::string context, Ptr<const Packet> packet)
 {
-  std::cout << "Packet transmitted by"
-  << context << " Time: "
-  << Simulator::Now().GetSeconds()
-  << std::endl;
-
-  //std::cout << "TX p: " << *packet << std::endl;
+  if(verbose)
+  {
+    NS_LOG_UNCOND("Packet transmitted by "
+    << context << " Time: "
+    << Simulator::Now().GetSeconds());
+  }
 }
 
 void ReceivePacket (Ptr<Socket> socket)
 {
   while (socket->Recv ())
     {
-      std::cout << "Received one packet at"
-      << Simulator::Now().GetSeconds() << std::endl;
+      if(verbose)
+      {
+        NS_LOG_UNCOND("Received one packet at "
+        << Simulator::Now().GetSeconds());
+      }
     }
 }
 
@@ -58,10 +59,11 @@ int
 main (int argc, char *argv[])
 {
 
-  uint32_t nPackets = 10;
+  double simulationTime = 5; //seconds
 
   CommandLine cmd;
-  cmd.AddValue("nPackets","Number of packets to echo",nPackets);
+  cmd.AddValue("simulationTime","Simulation time",simulationTime);
+  cmd.AddValue("verbose","Output transmission and reception timestamps",verbose);
   cmd.Parse (argc, argv);
 
   Time::SetResolution (Time::NS);
@@ -87,18 +89,18 @@ main (int argc, char *argv[])
 
   uint32_t socketPort = 9;
 
-  PPBPHelper ppbp = PPBPHelper ("ns3::TcpSocketFactory",
+  PPBPHelper ppbp = PPBPHelper ("ns3::UdpSocketFactory",
                        InetSocketAddress (interfaces.GetAddress (1),socketPort));
   ApplicationContainer apps = ppbp.Install (nodes.Get (0));
   apps.Start (Seconds (0));
-  apps.Stop (Seconds (1.0));
+  apps.Stop (Seconds (simulationTime));
 
-  Ptr<Socket> recvSink = Socket::CreateSocket (nodes.Get (1), TcpSocketFactory::GetTypeId ());
+  Ptr<Socket> recvSink = Socket::CreateSocket (nodes.Get (1), UdpSocketFactory::GetTypeId ());
   InetSocketAddress local = InetSocketAddress (interfaces.GetAddress (1), socketPort);
   recvSink->Bind (local);
   recvSink->SetRecvCallback (MakeCallback (&ReceivePacket));
 
-  Simulator::Stop (Seconds (1.0));
+  Simulator::Stop (Seconds (simulationTime));
 
   Config::Connect("/NodeList/*/ApplicationList/*/Tx", MakeCallback (&TxTrace));
 
