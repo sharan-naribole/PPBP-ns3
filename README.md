@@ -13,3 +13,16 @@ The key principles of Poisson Pareto burst process are as follows:
 
 - Each burst is modeled by  a constant bit rate.
 
+## Instructions
+
+- ns-3 installation and tutorial https://www.nsnam.org/docs/tutorial/html/index.html
+
+- Copy [PPBP-application.cc](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-application.cc) and [PPBP-application.h](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-application.cc) to /src/applications/model directory.
+
+- Copy [PPBP-helper.cc](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-helper.cc) and [PPBP-helper.h](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-helper.h) to src/applications/helper directory.
+
+- The public header and source code files for your new module should be specified in the wscript file by modifying it with your text editor. For this, open the wscript in the src/applications directory to include the above files. For an example, go through Step 3 - Declaring Source Files of [Adding a New Module to ns-3](https://www.nsnam.org/docs/manual/html/new-modules.html).
+
+- Build ns-3 by moving to your main ns-3-dev folder and running ```cpp ./waf build```
+
+- Copy the example file [PPBP-application-test.cc](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-application-test.cc) to your scratch directory and run ```cpp ./waf; ./waf --run scratch/PPBP-application-test.cc```
