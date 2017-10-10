@@ -146,7 +146,7 @@ namespace ns3 {
 
 		Ptr<ExponentialRandomVariable> exp = CreateObject<ExponentialRandomVariable> ();
     exp->SetAttribute ("Mean", DoubleValue (inter_burst_intervals));
-		exp->SetAttribute ("Bound", DoubleValue (3.0));
+		//exp->SetAttribute ("Bound", DoubleValue (3.0));
 		Time t_poisson_arrival = Seconds (exp->GetValue());
 		m_PoissonArrival = Simulator::Schedule(t_poisson_arrival,&PPBPApplication::PoissonArrival, this);
 
