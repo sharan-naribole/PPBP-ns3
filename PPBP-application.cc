@@ -34,6 +34,7 @@
 #include "ns3/udp-socket-factory.h"
 #include "ns3/double.h"
 #include "ns3/pointer.h"
+#include "ns3/string.h"
 
 NS_LOG_COMPONENT_DEFINE ("PPBPApplication");
 
@@ -58,13 +59,13 @@ namespace ns3 {
 					   MakeUintegerAccessor (&PPBPApplication::m_pktSize),
 					   MakeUintegerChecker<uint32_t> (1))
 		.AddAttribute ("MeanBurstArrivals", "Mean Active Sources",
-					   DoubleValue (5.0),
- 					   MakeDoubleAccessor (&PPBPApplication::m_burstArrivals),
-					   MakeDoubleChecker<uint32_t> (1))
+					   StringValue ("ns3::ConstantRandomVariable[Constant=20.0]"),
+                   	   MakePointerAccessor (&PPBPApplication::m_burstArrivals),
+                       MakePointerChecker <RandomVariableStream>())
 		.AddAttribute ("MeanBurstTimeLength", "Pareto distributed burst durations",
-					   DoubleValue (0.05),
-					   MakeDoubleAccessor (&PPBPApplication::m_burstLength),
-					   MakeDoubleChecker<double> ())
+					   StringValue ("ns3::ConstantRandomVariable[Constant=0.2]"),
+                   	   MakePointerAccessor (&PPBPApplication::m_burstLength),
+                       MakePointerChecker <RandomVariableStream>())
 		.AddAttribute ("H", "Hurst parameter",
 					   DoubleValue (0.7),
 					   MakeDoubleAccessor (&PPBPApplication::m_h),
@@ -140,30 +141,25 @@ namespace ns3 {
 		NS_LOG_FUNCTION_NOARGS ();
 
 		double inter_burst_intervals;
-		inter_burst_intervals = (double) 1/m_burstArrivals;
-
-		//cout << "Mean = " << inter_burst_intervals << endl;
+		inter_burst_intervals = (double) 1/m_burstArrivals->GetValue ();
 
 		Ptr<ExponentialRandomVariable> exp = CreateObject<ExponentialRandomVariable> ();
-    exp->SetAttribute ("Mean", DoubleValue (inter_burst_intervals));
-		//exp->SetAttribute ("Bound", DoubleValue (3.0));
+    	exp->SetAttribute ("Mean", DoubleValue (inter_burst_intervals));
+
 		Time t_poisson_arrival = Seconds (exp->GetValue());
 		m_PoissonArrival = Simulator::Schedule(t_poisson_arrival,&PPBPApplication::PoissonArrival, this);
 
 		// Pareto
 		m_shape = 3 - 2 * m_h;
-		m_timeSlot = Seconds((double) (m_shape - 1) * m_burstLength / m_shape);
+		m_timeSlot = Seconds((double) (m_shape - 1) * m_burstLength->GetValue () / m_shape);
 
 		Ptr<ParetoRandomVariable> pareto = CreateObject<ParetoRandomVariable> ();
-		pareto->SetAttribute ("Scale", DoubleValue (m_burstLength));
+		pareto->SetAttribute ("Scale", DoubleValue (m_burstLength->GetValue ()));
 		pareto->SetAttribute ("Shape", DoubleValue (m_shape));
 
-    double t_pareto = pareto->GetValue();
-		//std::cout << "exp = " << t_poisson_arrival << std::endl;
-		//std::cout << "pareto = " << t_pareto << std::endl;
+    	double t_pareto = pareto->GetValue ();
 
 		m_ParetoDeparture = Simulator::Schedule(t_poisson_arrival + Seconds (t_pareto),&PPBPApplication::ParetoDeparture, this);
-
 		m_ppbp = Simulator::Schedule(t_poisson_arrival,&PPBPApplication::PPBP, this);
 	}
 
