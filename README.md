@@ -25,7 +25,7 @@ The key principles of Poisson Pareto burst process are as follows:
 
 - Build ns-3 by moving to your main ns-3-dev folder and running ``` ./waf build```
 
-- Copy the example file [PPBP-application-test.cc](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-application-test.cc) to your scratch directory and run ``` ./waf; ./waf --run scratch/PPBP-application-test.cc```
+- Copy the example file [PPBP-application-test.cc](https://github.com/sharan-naribole/PPBP-ns3/blob/master/PPBP-application-test.cc) to your scratch directory and run ``` ./waf; ./waf --run scratch/PPBP-application-test```
 
 ## References
 
