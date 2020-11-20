@@ -130,24 +130,24 @@ namespace ns3 {
 		Time            m_lastStartTime;				// Time last packet sent
 		EventId         m_startStopEvent;				// Event id for next start or stop event
 		EventId         m_sendEvent;					// Event id of pending "send packet" event
-		EventId			    m_getUtilization;				// Event id to get the utilization factor
-		EventId			    m_PoissonArrival;				// Event id for next burst arrival
-		EventId			    m_ppbp;							// Event id for the length of a pending burst arrival
-		EventId			    m_ParetoDeparture;				// Event id of burst departure
+		EventId			m_getUtilization;				// Event id to get the utilization factor
+		EventId			m_PoissonArrival;				// Event id for next burst arrival
+		EventId			m_ppbp;							// Event id for the length of a pending burst arrival
+		EventId			m_ParetoDeparture;				// Event id of burst departure
 
-		uint32_t		    m_pktSize;						// Size of packets
+		uint32_t		m_pktSize;						// Size of packets
 
 		TracedCallback< Ptr<const Packet> > m_txTrace;	// Trace callback for each sent packet
 
-		double	        m_burstArrivals;				// Mean rate of burst arrivals
-		double	        m_burstLength;					// Mean burst time length
+		Ptr<RandomVariableStream>	m_burstArrivals;	// Mean rate of burst arrivals
+		Ptr<RandomVariableStream>   m_burstLength;		// Mean burst time length
 		DataRate        m_cbrRate;						// Burst intensity (constant bit-rate)
 
-		double			    m_h;							// Hurst parameter	(Pareto distribution)
-		double			    m_shape;						// Shape			(Pareto distribution)
-		Time			      m_timeSlot;						// The time slot
-		int				      m_activebursts;					// Number of active bursts at time t
-		bool			      m_offPeriod;
+		double			m_h;							// Hurst parameter	(Pareto distribution)
+		double			m_shape;						// Shape			(Pareto distribution)
+		Time			m_timeSlot;						// The time slot
+		int				m_activebursts;					// Number of active bursts at time t
+		bool			m_offPeriod;
 
 	private:
 		void ScheduleStartEvent();
