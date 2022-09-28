@@ -145,7 +145,7 @@ namespace ns3 {
 
 		double			m_h;							// Hurst parameter	(Pareto distribution)
 		double			m_shape;						// Shape			(Pareto distribution)
-		Time			m_timeSlot;						// The time slot
+		double			m_timeSlot;						// The time slot
 		int				m_activebursts;					// Number of active bursts at time t
 		bool			m_offPeriod;
 

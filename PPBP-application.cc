@@ -62,7 +62,7 @@ namespace ns3 {
 					   StringValue ("ns3::ConstantRandomVariable[Constant=20.0]"),
                    	   MakePointerAccessor (&PPBPApplication::m_burstArrivals),
                        MakePointerChecker <RandomVariableStream>())
-		.AddAttribute ("MeanBurstTimeLength", "Pareto distributed burst durations",
+		.AddAttribute ("MeanBurstTimeLength", "Mean burst duration",
 					   StringValue ("ns3::ConstantRandomVariable[Constant=0.2]"),
                    	   MakePointerAccessor (&PPBPApplication::m_burstLength),
                        MakePointerChecker <RandomVariableStream>())
@@ -151,10 +151,10 @@ namespace ns3 {
 
 		// Pareto
 		m_shape = 3 - 2 * m_h;
-		m_timeSlot = Seconds((double) (m_shape - 1) * m_burstLength->GetValue () / m_shape);
+		m_timeSlot = (double) (m_shape - 1) * m_burstLength->GetValue () / m_shape;
 
 		Ptr<ParetoRandomVariable> pareto = CreateObject<ParetoRandomVariable> ();
-		pareto->SetAttribute ("Scale", DoubleValue (m_burstLength->GetValue ()));
+		pareto->SetAttribute ("Scale", DoubleValue (m_timeSlot));
 		pareto->SetAttribute ("Shape", DoubleValue (m_shape));
 
     	double t_pareto = pareto->GetValue ();
